@@ -4,7 +4,7 @@ class Table:
     def __init__(self):
         self.players = []
         self.players.append(Human(self))
-        for i in range(8):
+        for i in range(10):
             self.players.append(CPU(self))
             
         self.deck = list(range(52))
@@ -38,7 +38,7 @@ class Table:
 
     def dealFlop(self):
         #flop = random.sample(self.deck, 3)
-        flop = [0,13,11]
+        flop = [22,23,24]
         self.community.extend(flop)
         for i in flop:
             self.deck.remove(i)
@@ -46,7 +46,7 @@ class Table:
 
     def dealTurn(self):
         #turn = random.sample(self.deck, 1)
-        turn = [24]
+        turn = [25]
         self.community.extend(turn)
         for i in turn:
             self.deck.remove(i)
@@ -204,7 +204,33 @@ class Toolkit():
 
         return quads
 
+    def straightFlush(self):
+        cards = self.hand + self.table.community
+        for i in range(4):
+            a, b = 13, 12
+            while a - b < 5:
+                if (a % 13) + 13*i not in cards:
+                    a = b
+                    b = a - 1
+                elif b + 13*i in cards:
+                    b -= 1
+                elif b + 13*i not in cards:
+                    a = b - 1
+                    b = a - 1
 
+                if a < 0:
+                    break
+
+            if b >= -1 and a >= 0:
+                return [i, b + 1, a]
+
+    def royalFlush(self):
+        sf = self.straightFlush()
+        if sf == None:
+            return None
+        elif sf[1] == 9 and sf[2] == 13:
+            return sf[0]
+    
 table = Table()
 table.dealFlop()
 table.dealTurn()
@@ -214,4 +240,5 @@ print(table.community)
 for player in table.players:
     print(player.hand)
     kit = Toolkit(table, player)
-    print(kit.highCard(), kit.pairs(), kit.bestTwoPair(), kit.trips(), kit.straight(), kit.flush(), kit.house(), kit.quads())
+    print(kit.highCard(), kit.pairs(), kit.bestTwoPair(), kit.trips(), kit.straight(), kit.flush(), kit.house(), kit.quads(),
+          kit.straightFlush(), kit.royalFlush())
