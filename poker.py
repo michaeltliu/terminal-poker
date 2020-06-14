@@ -38,7 +38,7 @@ class Table:
 
     def dealFlop(self):
         #flop = random.sample(self.deck, 3)
-        flop = [0,12,11]
+        flop = [0,13,11]
         self.community.extend(flop)
         for i in flop:
             self.deck.remove(i)
@@ -46,7 +46,7 @@ class Table:
 
     def dealTurn(self):
         #turn = random.sample(self.deck, 1)
-        turn = [10]
+        turn = [24]
         self.community.extend(turn)
         for i in turn:
             self.deck.remove(i)
@@ -118,20 +118,16 @@ class Toolkit():
     def highCard(self):
         return max(self.hand + self.table.community)
 
-    def pair(self):
+    def pairs(self):
         pairs = []
         for i in self.rankFreq.keys():
             if self.rankFreq.get(i, 0) == 2:
                 pairs.append(i)
 
-        #if len(pairs) == 0: return None
         return pairs
 
-    def twoPair(self):
-        pairs = []
-        for i in self.rankFreq.keys():
-            if self.rankFreq.get(i, 0) == 2:
-                pairs.append(i)
+    def bestTwoPair(self):
+        pairs = self.pairs()
 
         if len(pairs) == 0: return None
 
@@ -145,13 +141,12 @@ class Toolkit():
         l.append(max(pairs))
         return l
 
-    def threeKind(self):
+    def trips(self):
         trips = []
         for i in self.rankFreq.keys():
             if self.rankFreq.get(i, 0) == 3:
                 trips.append(i)
 
-        #if len(trips) == 0: return None
         return trips
 
     def straight(self):
@@ -184,16 +179,30 @@ class Toolkit():
         return None
 
     def house(self):
-        pass
+        pairs = self.pairs()
+        trips = self.trips()
+        quads = self.quads()
 
-    def fourKind(self):
+        if (len(trips) >= 1 or len(quads) >= 1) and len(pairs) + len(trips) + len(quads) >= 2:
+            top = trips + quads
+            topmax = max(top)
+            top.remove(topmax)
+
+            bottom = pairs + top
+            bottommax = max(bottom)
+            
+            l = [topmax, bottommax]
+            return l
+                
+        else: return None
+
+    def quads(self):
         quads = []
         for i in self.rankFreq.keys():
             if self.rankFreq.get(i, 0) == 4:
                 quads.append(i)
 
-        if len(quads) == 0: return None
-        return max(quads)
+        return quads
 
 
 table = Table()
@@ -205,4 +214,4 @@ print(table.community)
 for player in table.players:
     print(player.hand)
     kit = Toolkit(table, player)
-    print(kit.highCard(), kit.pair(), kit.twoPair(), kit.threeKind(), kit.straight(), kit.flush())
+    print(kit.highCard(), kit.pairs(), kit.bestTwoPair(), kit.trips(), kit.straight(), kit.flush(), kit.house(), kit.quads())
