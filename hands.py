@@ -230,8 +230,3 @@ def straightFlush(cards):
             return (i, a)
     
     return (0, 0)
-        
-print(compareHands(
-    [Card(1,2), Card(1,14), Card(2, 7), Card(1, 8), Card(1, 8)],
-    [Card(3,5), Card(3,6), Card(2, 13), Card(3, 12), Card(3, 8)]
-    ))
