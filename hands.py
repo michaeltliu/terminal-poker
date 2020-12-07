@@ -3,6 +3,9 @@ class Card:
     def __init__(self, suit, rank):
         self.suit = suit
         self.rank = rank
+
+    def __repr__(self):
+        return "<Suit: {}, Rank: {}>".format(self.suit, self.rank)
     
 # l1 and l2 are assumed to be monotone decreasing
 def compareList(l1, l2, c = 10):
