@@ -1,12 +1,9 @@
 class Card:
+    # Suit in [1,4]; rank in [2, 14]
     def __init__(self, suit, rank):
         self.suit = suit
         self.rank = rank
     
-class Table:
-    def __init__(self):
-        self.public = []
-
 # l1 and l2 are assumed to be monotone decreasing
 def compareList(l1, l2, c = 10):
     for i in range(min(c, len(l1))):
